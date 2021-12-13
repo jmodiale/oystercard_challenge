@@ -11,7 +11,15 @@ describe Oystercard do
 
     it 'balance increases value' do
       card.balance
-      expect { card.top_up 40 }.to change{ card.balance }.by 40
+      expect { card.top_up 1 }.to change{ card.balance }.by 1
+    end
+
+    it 'raises an error when above limit' do
+        max_limit = card.MAX_LIMIT
+        card.top_up(max_limit)
+       expect { card.top_up 1}.to raise_error 'There is a limit'
     end
 end
+
+
 
