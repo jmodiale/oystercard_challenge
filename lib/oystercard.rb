@@ -11,5 +11,11 @@ class Oystercard
         fail 'There is a limit' if balance + value.to_i > MAX_LIMIT
         @balance += value.to_i
     end
+
+    def deduct(value)
+        @value = value
+        @balance = balance - value
+    end
 end
+
 

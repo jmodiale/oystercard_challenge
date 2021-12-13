@@ -17,7 +17,14 @@ describe Oystercard do
     it 'raises an error when above limit' do
         max_limit = card.MAX_LIMIT
         card.top_up(max_limit)
-       expect { card.top_up 1}.to raise_error 'There is a limit'
+       expect { card.top_up 1}.not_to raise_error 'There is a limit'
+    end
+
+    it { is_expected.to respond_to(:deduct).with(1).argument}
+
+    it 'deducts money from balance' do
+        card.balance
+        expect { card.deduct 1 }.to change{ card.balance }.by -1
     end
 end
 
