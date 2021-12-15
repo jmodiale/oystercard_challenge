@@ -65,17 +65,6 @@ describe Oystercard do
         card.touch_out(station)
         expect(card.entry_station).to eq nil
     end
-
-    it 'journey list to be empty by default' do
-        expect(card.journeys).to be_empty
-    end
-
-    it 'checks if journey is created' do
-        card.top_up(Oystercard::MIN_BAL)
-        card.touch_in(station)
-        card.touch_out(station)
-        expect(card.journeys.count).to eq 1
-    end
 end
 
 
