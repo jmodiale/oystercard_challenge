@@ -2,6 +2,7 @@ require 'oystercard'
 
 describe Oystercard do
     let(:card) { Oystercard.new }
+    let(:station){ double(:station) }
 
     it 'balance default is 0' do
         expect(card.balance).to eq(0)
@@ -32,16 +33,55 @@ describe Oystercard do
     end
 
     it 'taps in' do
-        card.touch_in
+        card.top_up(Oystercard::MAX_LIMIT)
+        card.touch_in(station)
         expect(card).to be_in_journey
     end
 
     it 'taps out' do
-        card.touch_out
+        card.touch_out(station)
         expect(card).not_to be_in_journey
+    end
+
+    it 'raises an error when less than minimum balance' do
+        card.deduct(Oystercard::MIN_BAL)
+        expect{card.touch_in station}.not_to raise_error 'Balance less than £1'
+    end
+
+    it 'checks the card was charged on touchout' do
+        card.top_up(Oystercard::MIN_BAL)
+        card.touch_in(station)
+        expect{ card.touch_out station}.to change{ card.balance }.by(-Oystercard::MIN_BAL)
+    end
+
+    it 'remembers the entry station after touch in' do
+        card.top_up(Oystercard::MIN_BAL)
+        card.touch_in(station)
+        expect(card.entry_station).to eq station
+    end
+
+    it 'forgets the station' do
+        card.top_up(Oystercard::MIN_BAL)
+        card.touch_out(station)
+        expect(card.entry_station).to eq nil
+    end
+
+    it 'journey list to be empty by default' do
+        expect(card.journeys).to be_empty
+    end
+
+    it 'checks if journey is created' do
+        card.top_up(Oystercard::MIN_BAL)
+        card.touch_in(station)
+        card.touch_out(station)
+        expect(card.journeys.count).to eq 1
     end
 end
 
+
+# card.deduct(Oystercard::MIN_BAL)
+# min_limit = card.MIN_BAL
+# card.top_up(min_limit)
 
 
 
